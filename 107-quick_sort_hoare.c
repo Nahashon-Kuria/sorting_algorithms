@@ -1,70 +1,83 @@
 #include "sort.h"
+#include <stdio.h>
 
 /**
- * quick_sort_hoare - sorts an array with the Quicksort algorithm
- * @array: array of ints to sort
- * @size: size of the array
+ * quick_sort_hoare - sorts an array of integers in ascending
+ * order using the Quick sort Hoare algorithm
+ *
+ * @array: array
+ * @size: size
  */
 void quick_sort_hoare(int *array, size_t size)
 {
-	if (size < 2)
+	if (array == NULL || size < 2)
 		return;
-
-	quick_recursion(array, 0, (int)size - 1, size);
+	algorithm_quick_sort_h(array, 0, size - 1, size, size);
 }
 
 /**
- * quick_recursion - helper function for Quicksort
- * @array: array to sort
- * @left: index of the left element
- * @right: index of the right element
- * @size: size of the array
+ * algorithm_quick_sort_h - sorts an array of integers in ascending
+ * order using the Quick sort Hoare algorithm
+ *
+ * @array: array
+ * @lo: lower limit
+ * @hi: upper limit
+ * @size: size
+ * @p: partition
  */
-void quick_recursion(int *array, int left, int right, size_t size)
+void algorithm_quick_sort_h(int *array, size_t lo, size_t hi, size_t size,
+		size_t p)
 {
-	int piv;
+	size_t new = 0;
 
-	if (left < right)
-	{
-		piv = partition(array, left, right, size);
-		quick_recursion(array, left, piv - 1, size);
-		quick_recursion(array, piv, right, size);
+	if (lo < hi)
+	{	new = partition_h(array, lo, hi, size);
+		if (p == new)
+			p = new - 1;
+		else
+			p = new;
+		algorithm_quick_sort_h(array, lo, p, size, p);
+		algorithm_quick_sort_h(array, p + 1, hi, size, p);
 	}
 }
 
 /**
- * partition - gives a piv index for Quicksort
- * @array: array to find the piv in
- * @left: index of the left element
- * @right: index of the right element
- * @size: size of the array
+ * partition_h - partition function
+ * order using the Quick sort algorithm
  *
- * Return: the index of the piv element
+ * @array: array
+ * @lo: lower limit
+ * @hi: upper limit
+ * @size: size
+ * Return: partition index
  */
-int partition(int *array, int left, int right, size_t size)
+size_t	partition_h(int *array, size_t lo, size_t hi, size_t size)
 {
-	int tmp, pivot = array[right];
-	size_t i, j;
+	size_t i = 0, j = 0;
+	int pivot = 0, temp = 0, aux = 0;
 
-	i = left - 1;
-	j = right + 1;
+	pivot = array[hi];
+	i = lo - 1;
+	j = hi + 1;
 	while (1)
 	{
 		do {
-			i++;
+			i = i + 1;
 		} while (array[i] < pivot);
+
 		do {
-			j--;
+			j = j - 1;
 		} while (array[j] > pivot);
+
 		if (i >= j)
-			return (i);
-		if (i != j)
-		{
-			tmp = array[i];
-			array[i] = array[j];
-			array[j] = tmp;
-			print_array(array, size);
-		}
+			return (j);
+
+		/* swap A[i] with A[j] */
+		aux = array[i];
+		temp = array[j];
+		array[j] = aux;
+		array[i] = temp;
+		print_array(array, size);
+
 	}
-	return (0);
 }
